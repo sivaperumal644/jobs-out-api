@@ -57,4 +57,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
-    REQUIRED_FIELD = ['phone', 'first_name']
+    REQUIRED_FIELDS = ['phone_number', 'first_name']
