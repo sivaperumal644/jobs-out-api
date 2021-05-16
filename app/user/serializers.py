@@ -1,11 +1,11 @@
-from core.models import User
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
+from .models import User
 from .utils import check_valid_email, check_valid_phone_number
 
 
-class RegisterUserSerializer(serializers.ModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     """Serializer for register User"""
 
     email = serializers.CharField(max_length=255, min_length=8, required=True)
@@ -29,7 +29,7 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         max_length=255, required=False, allow_blank=True)
 
     def __init__(self, *args, **kwargs):
-        super(RegisterUserSerializer, self).__init__(*args, **kwargs)
+        super(UserSerializer, self).__init__(*args, **kwargs)
         self.fields['email'].error_messages['required'] = u"Email is required"
         self.fields['email'].error_messages['blank'] = u"Email is required"
         self.fields['password'].error_messages['required'] = u"Password is required"

@@ -23,7 +23,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'password',
             'first_name': 'Tester',
-            'phone_number': '+911234567890'
+            'phone_number': '+917324567890'
         }
 
         res = self.client.post(REGISTER_URL, payload)
@@ -38,7 +38,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'password',
             'first_name': 'Tester',
-            'phone_number': '+911234567890'
+            'phone_number': '+917324567890'
         }
         create_user(**payload)
 
@@ -52,7 +52,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'passwor',
             'first_name': 'Tester',
-            'phone_number': '+911234567890'
+            'phone_number': '+917324567890'
         }
         res = self.client.post(REGISTER_URL, payload)
 
@@ -68,7 +68,7 @@ class RegisterUserApiTests(TestCase):
             'email': None,
             'password': 'password',
             'first_name': 'Tester',
-            'phone_number': '+911234567890'
+            'phone_number': '+917324567890'
         }
 
         res = self.client.post(REGISTER_URL, payload)
@@ -81,7 +81,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': None,
             'first_name': 'Tester',
-            'phone_number': '+911234567890'
+            'phone_number': '+917324567890'
         }
 
         res = self.client.post(REGISTER_URL, payload)
@@ -94,7 +94,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'password',
             'first_name': None,
-            'phone_number': '+911234567890'
+            'phone_number': '+917324567890'
         }
 
         res = self.client.post(REGISTER_URL, payload)
@@ -127,7 +127,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'password',
             'first_name': 'siva',
-            'phone_number': '+912345678901',
+            'phone_number': '+917324567890',
             'gender': 'M'
         }
 
@@ -141,10 +141,38 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'password',
             'first_name': 'siva',
-            'phone_number': '+912345678901',
+            'phone_number': '+917324567890',
             'gender': 'male'
         }
 
         res = self.client.post(REGISTER_URL, payload)
-        
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_email_format(self):
+        """Test invalid email format is validated"""
+        payload = {
+            'email': 'tester',
+            'password': 'password',
+            'first_name': 'siva',
+            'phone_number': '+917324567890',
+            'gender': 'male'
+        }
+
+        res = self.client.post(REGISTER_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_invalid_phone_number(self):
+        """Test invalid phone number format is validated"""
+        payload = {
+            'email': 'tester@gmail.com',
+            'password': 'password',
+            'first_name': 'siva',
+            'phone_number': '7324567890',
+            'gender': 'male'
+        }
+
+        res = self.client.post(REGISTER_URL, payload)
+
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)

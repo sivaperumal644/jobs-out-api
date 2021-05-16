@@ -2,16 +2,16 @@ from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-from .serializers import RegisterUserSerializer
+from .serializers import UserSerializer
 from .utils import generate_jwt_token
 
 
 class RegisterUserView(GenericAPIView):
     """Create a new user"""
-    serializer_class = RegisterUserSerializer
+    serializer_class = UserSerializer
 
     def post(self, request):
-        serialized_user = RegisterUserSerializer(data=request.data)
+        serialized_user = UserSerializer(data=request.data)
 
         if serialized_user.is_valid():
             serialized_user.save()
