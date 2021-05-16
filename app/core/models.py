@@ -15,6 +15,8 @@ class UserManager(BaseUserManager):
             raise ValueError("Phone number is required")
         if not extra_fields['first_name']:
             raise ValueError("First name is required")
+        if len(password) < 8:
+            raise ValueError("Password must be atleast 8 characters long")
 
         user = self.model(email=self.normalize_email(email), **extra_fields)
         user.set_password(password)
@@ -40,12 +42,13 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model"""
+    gender_choices = [("M", "Male"), ("F", "Female"), ("O", "Others")]
     email = models.CharField(max_length=255, unique=True)
     phone_number = models.CharField(max_length=13, unique=True)
     first_name = models.CharField(max_length=50)
     last_name = models.CharField(max_length=50)
     age = models.IntegerField(null=True)
-    gender = models.CharField(max_length=10)
+    gender = models.CharField(max_length=10, choices=gender_choices)
     profession = models.CharField(max_length=50)
     experience = models.IntegerField(null=True)
     other_skills = models.CharField(max_length=255)
@@ -58,3 +61,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     USERNAME_FIELD = 'email'
 
     REQUIRED_FIELDS = ['phone_number', 'first_name']
+
+    def __str__(self):
+        """Returns String representation of the model"""
+        return self.email

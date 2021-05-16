@@ -15,7 +15,7 @@ class RegisterUserApiTests(TestCase):
     "Test the register API"
 
     def setUp(self):
-        self.client = APIClient
+        self.client = APIClient()
 
     def test_create_valid_user(self):
         "Test creating a user with valid payload"
@@ -28,7 +28,7 @@ class RegisterUserApiTests(TestCase):
 
         res = self.client.post(REGISTER_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_201_CREATED)
-        user = get_user_model().objects.get(**res.data)
+        user = get_user_model().objects.get(**res.data['user'])
         self.assertTrue(user.check_password(payload['password']))
         self.assertNotIn('password', res.data)
 
@@ -112,4 +112,39 @@ class RegisterUserApiTests(TestCase):
 
         res = self.client.post(REGISTER_URL, payload)
 
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_empty_payload(self):
+        payload = {}
+
+        res = self.client.post(REGISTER_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
+
+    def test_valid_gender_choices(self):
+        """Test Create User with valid gender is successful"""
+        payload = {
+            'email': 'tester@gmail.com',
+            'password': 'password',
+            'first_name': 'siva',
+            'phone_number': '+912345678901',
+            'gender': 'M'
+        }
+
+        res = self.client.post(REGISTER_URL, payload)
+
+        self.assertEqual(res.status_code, status.HTTP_201_CREATED)
+
+    def test_invalid_gender_choices(self):
+        """Test Create User with invalid gender fails"""
+        payload = {
+            'email': 'tester@gmail.com',
+            'password': 'password',
+            'first_name': 'siva',
+            'phone_number': '+912345678901',
+            'gender': 'male'
+        }
+
+        res = self.client.post(REGISTER_URL, payload)
+        
         self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
