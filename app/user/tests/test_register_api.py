@@ -23,7 +23,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'password',
             'first_name': 'Tester',
-            'phone_number': '+917324567890'
+            'phone_number': '+917339195584'
         }
 
         res = self.client.post(REGISTER_URL, payload)
@@ -38,7 +38,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'password',
             'first_name': 'Tester',
-            'phone_number': '+917324567890'
+            'phone_number': '+917339195584'
         }
         create_user(**payload)
 
@@ -52,7 +52,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'passwor',
             'first_name': 'Tester',
-            'phone_number': '+917324567890'
+            'phone_number': '+917339195584'
         }
         res = self.client.post(REGISTER_URL, payload)
 
@@ -68,7 +68,7 @@ class RegisterUserApiTests(TestCase):
             'email': None,
             'password': 'password',
             'first_name': 'Tester',
-            'phone_number': '+917324567890'
+            'phone_number': '+917339195584'
         }
 
         res = self.client.post(REGISTER_URL, payload)
@@ -81,7 +81,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': None,
             'first_name': 'Tester',
-            'phone_number': '+917324567890'
+            'phone_number': '+917339195584'
         }
 
         res = self.client.post(REGISTER_URL, payload)
@@ -94,7 +94,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'password',
             'first_name': None,
-            'phone_number': '+917324567890'
+            'phone_number': '+917339195584'
         }
 
         res = self.client.post(REGISTER_URL, payload)
@@ -127,7 +127,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'password',
             'first_name': 'siva',
-            'phone_number': '+917324567890',
+            'phone_number': '+917339195584',
             'gender': 'M'
         }
 
@@ -141,7 +141,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester@gmail.com',
             'password': 'password',
             'first_name': 'siva',
-            'phone_number': '+917324567890',
+            'phone_number': '+917339195584',
             'gender': 'male'
         }
 
@@ -155,7 +155,7 @@ class RegisterUserApiTests(TestCase):
             'email': 'tester',
             'password': 'password',
             'first_name': 'siva',
-            'phone_number': '+917324567890',
+            'phone_number': '+917339195584',
             'gender': 'male'
         }
 
