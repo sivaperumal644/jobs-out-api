@@ -1,12 +1,12 @@
 from django.contrib.auth import get_user_model
-from rest_framework import serializers
+from rest_framework import serializers, status
 
 from .models import User
 from .utils import check_valid_email, check_valid_phone_number
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """Serializer for register User"""
+    """Serializer for registered User"""
 
     email = serializers.CharField(max_length=255, min_length=8, required=True)
     password = serializers.CharField(
@@ -66,3 +66,24 @@ class UserSerializer(serializers.ModelSerializer):
             return user
         except ValueError as error:
             return error
+
+
+class LoginSerializer(serializers.ModelSerializer):
+    """Serializer for login API"""
+    email = serializers.CharField(max_length=255, min_length=8, required=True)
+    password = serializers.CharField(
+        max_length=65, min_length=8, write_only=True, required=True, error_messages={
+            "min_length": "Password must be 8 chararcters long"
+        }
+    )
+
+    def __init__(self, *args, **kwargs):
+        super(LoginSerializer, self).__init__(*args, **kwargs)
+        self.fields['email'].error_messages['required'] = u"Email is required"
+        self.fields['email'].error_messages['blank'] = u"Email is required"
+        self.fields['password'].error_messages['required'] = u"Password is required"
+        self.fields['password'].error_messages['blank'] = u"Password is required"
+
+    class Meta:
+        model = User
+        fields = ['email', 'password']
