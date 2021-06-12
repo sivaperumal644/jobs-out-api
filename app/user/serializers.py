@@ -1,3 +1,4 @@
+from django.contrib import auth
 from django.contrib.auth import get_user_model
 from rest_framework import serializers, status
 
@@ -87,3 +88,19 @@ class LoginSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['email', 'password']
+
+    def validate(self, attrs):
+        email = attrs['email']
+        password = attrs['password']
+        if not get_user_model().objects.filter(email=email).exists():
+            raise serializers.ValidationError(
+                detail='User does not exist with this email',
+                code=status.HTTP_401_UNAUTHORIZED
+            )
+        user = auth.authenticate(email=email, password=password)
+        if not user:
+            raise serializers.ValidationError(
+                detail='The credentials you entered are invalid',
+                code=status.HTTP_401_UNAUTHORIZED
+            )
+        return super().validate(attrs)

@@ -42,51 +42,31 @@ class LoginUserView(GenericAPIView):
     serializer_class = LoginSerializer
 
     def post(self, request):
-        serialized_data = LoginSerializer(data=request.data)
         data = request.data
+        serialized_data = LoginSerializer(data=data)
         email = data.get('email', '')
-        password = data.get('password', '')
 
         if serialized_data.is_valid():
-            if not get_user_model().objects.filter(email=email).exists():
-                payload = {
-                    'code': status.HTTP_401_UNAUTHORIZED,
-                    'status': False,
-                    'error': 'User does not exist with this email'
-                }
-
-                return Response(payload, status=status.HTTP_401_UNAUTHORIZED)
-
-            user = auth.authenticate(email=email, password=password)
-
-            if user:
-                serialized_user = UserSerializer(user)
-
-                token = generate_jwt_token(serialized_user.data)
-
-                payload = {
-                    'code': status.HTTP_200_OK,
-                    'status': True,
-                    'user': serialized_user.data,
-                    'token': token,
-                }
-
-                return Response(payload, status=status.HTTP_200_OK)
-
+            user = get_user_model().objects.get(email=email)
+            serialized_user = UserSerializer(user)
+            token = generate_jwt_token(serialized_user.data)
             payload = {
-                'code': status.HTTP_401_UNAUTHORIZED,
-                'status': False,
-                'error': 'The credentials you entered are invalid'
+                'code': status.HTTP_200_OK,
+                'status': True,
+                'user': serialized_user.data,
+                'token': token,
             }
-
-            return Response(payload, status=status.HTTP_401_UNAUTHORIZED)
+            return Response(payload, status=status.HTTP_200_OK)
 
         errors = serialized_data.errors
         error = list(errors.values())[0][0]
+        status_code = error.code
+        if status_code is None or not isinstance(status_code, int):
+            status_code = status.HTTP_400_BAD_REQUEST
         error_payload = {
-            'code': status.HTTP_400_BAD_REQUEST,
+            'code': status_code,
             'status': False,
             'errors': errors,
             'error': error
         }
-        return Response(error_payload, status=status.HTTP_400_BAD_REQUEST)
+        return Response(error_payload, status=status_code)
