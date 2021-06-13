@@ -8,7 +8,7 @@ from .utils import check_valid_email, check_valid_phone_number
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for registered User"""
-
+    user_id = serializers.UUIDField(read_only=True)
     email = serializers.CharField(max_length=255, min_length=8, required=True)
     password = serializers.CharField(
         max_length=65, min_length=8, write_only=True, required=True, error_messages={
@@ -44,7 +44,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ['id', 'email', 'password', 'phone_number', 'first_name', 'last_name', 'age',
+        fields = ['id', 'user_id', 'email', 'password', 'phone_number', 'first_name', 'last_name', 'age',
                   'gender', 'profession', 'experience', 'other_skills']
 
     def validate(self, attrs):

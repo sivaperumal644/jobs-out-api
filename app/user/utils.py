@@ -10,7 +10,7 @@ def generate_jwt_token(user):
     access_token_expiry_time = datetime.datetime.utcnow() + datetime.timedelta(days=30)
     epoch = datetime.datetime.utcfromtimestamp(0)
     access_token_payload = {
-        'user_id': user['email'],
+        'user_id': user['user_id'],
         'exp': access_token_expiry_time,
         'iat': datetime.datetime.utcnow()
     }
