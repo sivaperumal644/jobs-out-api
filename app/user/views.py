@@ -1,8 +1,7 @@
-from django.contrib import auth
+from core.custom_responses import error_response, token_response
 from django.contrib.auth import get_user_model
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
-from rest_framework.response import Response
 
 from .serializers import (LoginSerializer, RefreshTokenSerializer,
                           UserSerializer)
@@ -19,23 +18,9 @@ class RegisterUserView(GenericAPIView):
         if serialized_user.is_valid():
             serialized_user.save()
             token = generate_jwt_token(serialized_user.data)
-            data = {
-                'code': status.HTTP_201_CREATED,
-                'status': True,
-                'user': serialized_user.data,
-                'token': token,
-            }
-            return Response(data, status=status.HTTP_201_CREATED)
+            return token_response(token, serialized_user.data, status_code=status.HTTP_201_CREATED)
 
-        errors = serialized_user.errors
-        error = list(errors.values())[0][0]
-        error_data = {
-            'code': status.HTTP_400_BAD_REQUEST,
-            'status': False,
-            'errors': errors,
-            'error': error
-        }
-        return Response(error_data, status=status.HTTP_400_BAD_REQUEST)
+        return error_response(serialized_user.errors)
 
 
 class LoginUserView(GenericAPIView):
@@ -51,26 +36,9 @@ class LoginUserView(GenericAPIView):
             user = get_user_model().objects.get(email=email)
             serialized_user = UserSerializer(user)
             token = generate_jwt_token(serialized_user.data)
-            payload = {
-                'code': status.HTTP_200_OK,
-                'status': True,
-                'user': serialized_user.data,
-                'token': token,
-            }
-            return Response(payload, status=status.HTTP_200_OK)
+            return token_response(token, serialized_user.data)
 
-        errors = serialized_data.errors
-        error = list(errors.values())[0][0]
-        status_code = error.code
-        if status_code is None or not isinstance(status_code, int):
-            status_code = status.HTTP_400_BAD_REQUEST
-        error_payload = {
-            'code': status_code,
-            'status': False,
-            'errors': errors,
-            'error': error
-        }
-        return Response(error_payload, status=status_code)
+        return error_response(serialized_data.errors)
 
 
 class RefreshTokenView(GenericAPIView):
@@ -87,23 +55,6 @@ class RefreshTokenView(GenericAPIView):
             user = get_user_model().objects.get(user_id=user_id)
             serialized_user = UserSerializer(user)
             token = generate_jwt_token(serialized_user.data)
-            payload = {
-                'code': status.HTTP_200_OK,
-                'status': True,
-                'user': serialized_user.data,
-                'token': token,
-            }
-            return Response(payload, status=status.HTTP_200_OK)
+            return token_response(token, serialized_user.data)
 
-        errors = serialized_data.errors
-        error = list(errors.values())[0][0]
-        status_code = error.code
-        if status_code is None or not isinstance(status_code, int):
-            status_code = status.HTTP_400_BAD_REQUEST
-        error_payload = {
-            'code': status_code,
-            'status': False,
-            'errors': errors,
-            'error': error
-        }
-        return Response(error_payload, status=status_code)
+        return error_response(serialized_data.errors)
