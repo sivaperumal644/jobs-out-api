@@ -16,7 +16,7 @@ def generate_jwt_token(user):
     }
 
     refresh_token_payload = {
-        'user_id': user['email'],
+        'user_id': user['user_id'],
         'exp': datetime.datetime.utcnow() + datetime.timedelta(days=60),
         'iat': datetime.datetime.utcnow()
     }
