@@ -35,7 +35,18 @@ def generate_jwt_token(user):
 
     return response
 
-# ^([0]|\+91)[789]\d{9}$
+
+def decode_jwt_token(refresh_token):
+    """Decodes JWT token and returns user id"""
+    try:
+        payload = jwt.decode(refresh_token, settings.TOKEN_SECRET_KEY)
+    except jwt.DecodeError as identifier:
+        raise ValueError('Your token is invalid')
+
+    except jwt.ExpiredSignatureError as identifier:
+        raise ValueError('Your token has been expired')
+
+    return payload['user_id']
 
 
 def check_valid_email(email):

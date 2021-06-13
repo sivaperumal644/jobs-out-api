@@ -25,9 +25,11 @@ class RefreshTokenAPITests(TestCase):
             'first_name': 'Siva Perumal'
         }
 
+        create_user(**payload)
+
         res = self.client.post(
             LOGIN_URL, {'email': 'tester@gmail.com', 'password': 'password'})
-        self.token = res['token']
+        self.token = res.data['token']
         self.invalid_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiODkyZGEyNTYtOGMwOC00Mjk0LWEzMTItMmIyMWY1MjY5N2EzIiwiZXhwIjoxNjI2MTYwMTM1LCJpYXQiOjE2MjM1NjgxMzV9.9uKx6OJT-br4lc0ogKlm2Asy1P26dpUoi4ngHgrcMP4'
         self.expired_token = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNTA4MzI0NWMtNTJlYy00ZmEzLTk0YmYtNjNjMGUzYzY2Y2FkIiwiZXhwIjoxNjIzNTY4NTYxLCJpYXQiOjE2MjM1NjgyNjF9.1c_Sapsmw8EtMm4nhU9vjERA3zaY23I8HuW0sr2MOlo'
 

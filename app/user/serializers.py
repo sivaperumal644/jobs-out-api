@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers, status
 
 from .models import User
-from .utils import check_valid_email, check_valid_phone_number
+from .utils import (check_valid_email, check_valid_phone_number,
+                    decode_jwt_token)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -103,4 +104,37 @@ class LoginSerializer(serializers.ModelSerializer):
                 detail='The credentials you entered are invalid',
                 code=status.HTTP_401_UNAUTHORIZED
             )
+        return super().validate(attrs)
+
+
+class RefreshTokenSerializer(serializers.ModelSerializer):
+    """Serializer for refresh token API"""
+    refresh_token = serializers.CharField(max_length=255, required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(RefreshTokenSerializer, self).__init__(*args, **kwargs)
+        self.fields['refresh_token'].error_messages['required'] = u"Refresh token is required"
+        self.fields['refresh_token'].error_messages['blank'] = u"Refresh token is required"
+
+    class Meta:
+        model = User
+        fields = ['refresh_token']
+
+    def validate(self, attrs):
+        try:
+            user_id = decode_jwt_token(attrs['refresh_token'])
+            user = get_user_model().objects.filter(user_id=user_id).exists()
+
+            if not user:
+                raise serializers.ValidationError(
+                    detail='Invalid token. User does not exist',
+                    code=status.HTTP_401_UNAUTHORIZED
+                )
+                
+        except ValueError as error:
+            raise serializers.ValidationError(
+                detail=error,
+                code=status.HTTP_401_UNAUTHORIZED
+            )
+
         return super().validate(attrs)

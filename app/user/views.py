@@ -4,8 +4,9 @@ from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 
-from .serializers import LoginSerializer, UserSerializer
-from .utils import generate_jwt_token
+from .serializers import (LoginSerializer, RefreshTokenSerializer,
+                          UserSerializer)
+from .utils import decode_jwt_token, generate_jwt_token
 
 
 class RegisterUserView(GenericAPIView):
@@ -48,6 +49,42 @@ class LoginUserView(GenericAPIView):
 
         if serialized_data.is_valid():
             user = get_user_model().objects.get(email=email)
+            serialized_user = UserSerializer(user)
+            token = generate_jwt_token(serialized_user.data)
+            payload = {
+                'code': status.HTTP_200_OK,
+                'status': True,
+                'user': serialized_user.data,
+                'token': token,
+            }
+            return Response(payload, status=status.HTTP_200_OK)
+
+        errors = serialized_data.errors
+        error = list(errors.values())[0][0]
+        status_code = error.code
+        if status_code is None or not isinstance(status_code, int):
+            status_code = status.HTTP_400_BAD_REQUEST
+        error_payload = {
+            'code': status_code,
+            'status': False,
+            'errors': errors,
+            'error': error
+        }
+        return Response(error_payload, status=status_code)
+
+
+class RefreshTokenView(GenericAPIView):
+    "Get refresh token and send a fresh access and refresh token"
+    serializer_class = RefreshTokenSerializer
+
+    def post(self, request):
+        data = request.data
+        serialized_data = RefreshTokenSerializer(data=data)
+        refresh_token = data.get('refresh_token', '')
+
+        if serialized_data.is_valid():
+            user_id = decode_jwt_token(refresh_token)
+            user = get_user_model().objects.get(user_id=user_id)
             serialized_user = UserSerializer(user)
             token = generate_jwt_token(serialized_user.data)
             payload = {
