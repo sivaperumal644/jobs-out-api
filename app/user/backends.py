@@ -20,8 +20,8 @@ class JWTAuthentication(authentication.BaseAuthentication):
 
             user = get_user_model().objects.get(user_id=payload['user_id'])
             return (user, token)
-        except jwt.DecodeError as identifier:
+        except jwt.DecodeError:
             raise exceptions.AuthenticationFailed('Your token is invalid')
-        except jwt.ExpiredSignatureError as identifier:
+        except jwt.ExpiredSignatureError:
             raise exceptions.AuthenticationFailed(
                 'Your token has been expired')

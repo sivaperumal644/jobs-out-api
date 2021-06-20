@@ -40,10 +40,10 @@ def decode_jwt_token(refresh_token):
     """Decodes JWT token and returns user id"""
     try:
         payload = jwt.decode(refresh_token, settings.TOKEN_SECRET_KEY)
-    except jwt.DecodeError as identifier:
+    except jwt.DecodeError:
         raise ValueError('Your token is invalid')
 
-    except jwt.ExpiredSignatureError as identifier:
+    except jwt.ExpiredSignatureError:
         raise ValueError('Your token has been expired')
 
     return payload['user_id']

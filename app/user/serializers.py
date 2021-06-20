@@ -10,10 +10,14 @@ from .utils import (check_valid_email, check_valid_phone_number,
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for registered User"""
     user_id = serializers.UUIDField(read_only=True)
-    email = serializers.CharField(max_length=255, min_length=8, required=True)
+    email = serializers.CharField(
+        max_length=255, min_length=8, required=True, error_messages={
+            "min_length": "Email must be atleast 8 chararcters long"
+        }
+    )
     password = serializers.CharField(
         max_length=65, min_length=8, write_only=True, required=True, error_messages={
-            "min_length": "Password must be 8 chararcters long"
+            "min_length": "Password must be atleast 8 chararcters long"
         }
     )
     phone_number = serializers.CharField(max_length=13, required=True)
@@ -34,6 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
         super(UserSerializer, self).__init__(*args, **kwargs)
         self.fields['email'].error_messages['required'] = u"Email is required"
         self.fields['email'].error_messages['blank'] = u"Email is required"
+        self.fields['email'].error_messages['min_length'] = u"Email must be atleast 8 characters long."
         self.fields['password'].error_messages['required'] = u"Password is required"
         self.fields['password'].error_messages['blank'] = u"Password is required"
         self.fields['phone_number'].error_messages['required'] = u"Phone Number is required"
@@ -130,7 +135,7 @@ class RefreshTokenSerializer(serializers.ModelSerializer):
                     detail='Invalid token. User does not exist',
                     code=status.HTTP_401_UNAUTHORIZED
                 )
-                
+
         except ValueError as error:
             raise serializers.ValidationError(
                 detail=error,
