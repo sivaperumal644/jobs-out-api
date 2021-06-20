@@ -1,21 +1,23 @@
 import uuid
 
-from django.contrib.auth.models import (AbstractBaseUser, BaseUserManager,
-                                        PermissionsMixin)
+from django.contrib.auth.models import (
+    AbstractBaseUser,
+    BaseUserManager,
+    PermissionsMixin,
+)
 from django.db import models
 
 
 class UserManager(BaseUserManager):
-
     def create_user(self, email, password, **extra_fields):
         """Creating and saving a user"""
         if not email:
             raise ValueError("Email is required")
         if not password:
             raise ValueError("Password is required")
-        if not extra_fields['phone_number']:
+        if not extra_fields["phone_number"]:
             raise ValueError("Phone number is required")
-        if not extra_fields['first_name']:
+        if not extra_fields["first_name"]:
             raise ValueError("First name is required")
         if len(password) < 8:
             raise ValueError("Password must be atleast 8 characters long")
@@ -32,7 +34,7 @@ class UserManager(BaseUserManager):
             email=email,
             password=password,
             phone_number=phone_number,
-            first_name=first_name
+            first_name=first_name,
         )
         user.is_admin = True
         user.is_superuser = True
@@ -44,6 +46,7 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     """Custom user model"""
+
     gender_choices = [("M", "Male"), ("F", "Female"), ("O", "Others")]
     user_id = models.UUIDField(default=uuid.uuid4, unique=True)
     email = models.CharField(max_length=255, unique=True)
@@ -61,9 +64,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = "email"
 
-    REQUIRED_FIELDS = ['phone_number', 'first_name']
+    REQUIRED_FIELDS = ["phone_number", "first_name"]
 
     def __str__(self):
         """Returns String representation of the model"""

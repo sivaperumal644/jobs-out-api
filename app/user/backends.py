@@ -13,15 +13,14 @@ class JWTAuthentication(authentication.BaseAuthentication):
         if not auth_data:
             return None
 
-        prefix, token = auth_data.decode('utf-8').split(' ')
+        prefix, token = auth_data.decode("utf-8").split(" ")
 
         try:
             payload = jwt.decode(token, settings.TOKEN_SECRET_KEY)
 
-            user = get_user_model().objects.get(user_id=payload['user_id'])
+            user = get_user_model().objects.get(user_id=payload["user_id"])
             return (user, token)
         except jwt.DecodeError:
-            raise exceptions.AuthenticationFailed('Your token is invalid')
+            raise exceptions.AuthenticationFailed("Your token is invalid")
         except jwt.ExpiredSignatureError:
-            raise exceptions.AuthenticationFailed(
-                'Your token has been expired')
+            raise exceptions.AuthenticationFailed("Your token has been expired")
