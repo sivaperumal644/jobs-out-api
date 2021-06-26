@@ -16,3 +16,5 @@ COPY ./app /app
 
 RUN adduser -D user
 USER user
+
+CMD gunicorn app.wsgi:application --bind 0.0.0.0:$PORT

@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-import os
 from pathlib import Path
+import os, dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,15 +21,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "django-insecure-@k59$^00xpil4))i-sf^6b8n513&i5+wt*@v4lk+#oxs4$e10_"
+SECRET_KEY = ""
 
 # SECURITY WARNING: keep the secret key used in production secret!
-TOKEN_SECRET_KEY = "spjobsoutapisecretkey"
+TOKEN_SECRET_KEY = ""
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["jobs-out-api.herokuapp.com"]
 
 
 # Application definition
@@ -91,15 +91,13 @@ WSGI_APPLICATION = "app.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    "default": {
-        "ENGINE": "django.db.backends.postgresql",
-        "HOST": os.environ.get("DB_HOST"),
-        "NAME": os.environ.get("DB_NAME"),
-        "USER": os.environ.get("DB_USER"),
-        "PASSWORD": os.environ.get("DB_PASS"),
-    }
-}
+DATABASE_URL = ""
+
+DATABASES = {}
+
+DATABASES["default"] = dj_database_url.config(
+    default=DATABASE_URL, conn_max_age=600, ssl_require=True
+)
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": ("user.backends.JWTAuthentication",),
