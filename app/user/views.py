@@ -4,6 +4,7 @@ from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
+from rest_framework.response import Response
 from core.docs.sample_response import SampleResponses
 
 from .serializers import LoginSerializer, RefreshTokenSerializer, UserSerializer
@@ -99,3 +100,13 @@ class RefreshTokenView(GenericAPIView):
             return CustomResponses.token_response(token, serialized_user.data)
 
         return CustomResponses.error_response(serialized_data.errors)
+
+
+class TestingView(GenericAPIView):
+    """Testing github actions"""
+
+    def get(self, request):
+        return Response(
+            data={"message": "Github actions working"},
+            status=status.HTTP_200_OK,
+        )
