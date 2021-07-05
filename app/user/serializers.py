@@ -3,7 +3,8 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers, status
 
 from .models import User
-from .utils import check_valid_email, check_valid_phone_number, decode_jwt_token
+from .utils import (check_valid_email, check_valid_phone_number,
+                    decode_jwt_token)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -33,6 +34,8 @@ class UserSerializer(serializers.ModelSerializer):
     other_skills = serializers.CharField(
         max_length=255, required=False, allow_blank=True
     )
+    is_admin = serializers.BooleanField(read_only=True)
+    is_active = serializers.BooleanField(read_only=True)
 
     def __init__(self, *args, **kwargs):
         super(UserSerializer, self).__init__(*args, **kwargs)
@@ -70,6 +73,8 @@ class UserSerializer(serializers.ModelSerializer):
             "profession",
             "experience",
             "other_skills",
+            "is_admin",
+            "is_active",
         ]
 
     def validate(self, attrs):

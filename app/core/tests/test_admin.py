@@ -4,26 +4,22 @@ from django.urls import reverse
 
 
 class AdminSiteTests(TestCase):
-
     def setUp(self):
         self.client = Client()
         self.admin_user = get_user_model().objects.create_superuser(
-            'admin@gmail.com',
-            'password',
-            '+918903134939',
-            'Siva Perumal'
+            "admin@gmail.com", "password", "+918903134939", "Siva Perumal"
         )
         self.client.force_login(self.admin_user)
         self.user = get_user_model().objects.create_user(
-            email='sivaperumal644@gmail.com',
-            password='password',
-            phone_number='+918667643633',
-            first_name='Siva Perumal'
+            email="sivaperumal644@gmail.com",
+            password="password",
+            phone_number="+918667643633",
+            first_name="Siva Perumal",
         )
 
     def test_users_listed(self):
         """Test that users are listed on user page"""
-        url = reverse('admin:user_user_changelist')
+        url = reverse("admin:user_user_changelist")
         res = self.client.get(url)
         self.assertContains(res, self.user.phone_number)
         self.assertContains(res, self.user.first_name)
@@ -31,14 +27,14 @@ class AdminSiteTests(TestCase):
 
     def test_user_change_page(self):
         """Test that the user edit page works"""
-        url = reverse('admin:user_user_change', args=[self.user.id])
+        url = reverse("admin:user_user_change", args=[self.user.id])
         res = self.client.get(url)
 
         self.assertEqual(res.status_code, 200)
 
     def test_create_user_page(self):
         """Test that the create user page works"""
-        url = reverse('admin:user_user_add')
+        url = reverse("admin:user_user_add")
         res = self.client.get(url)
 
         self.assertEqual(res.status_code, 200)

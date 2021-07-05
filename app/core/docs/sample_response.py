@@ -19,7 +19,6 @@ class SampleResponses:
                         "user_id": "23e233dfd",
                         "email": "emailID",
                         "phone_number": "+91123456789",
-                        "password": "password",
                         "first_name": "name",
                         "last_name": "initial or last name",
                         "age": 18,
@@ -27,6 +26,8 @@ class SampleResponses:
                         "profession": "profession",
                         "experience": 2,
                         "other_skills": "skills",
+                        "is_admin": False,
+                        "is_active": True,
                     },
                 }
             },

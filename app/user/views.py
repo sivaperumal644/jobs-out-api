@@ -1,12 +1,13 @@
 from core.custom_responses import CustomResponses
+from core.docs.sample_response import SampleResponses
 from django.contrib.auth import get_user_model
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
-from core.docs.sample_response import SampleResponses
 
-from .serializers import LoginSerializer, RefreshTokenSerializer, UserSerializer
+from .serializers import (LoginSerializer, RefreshTokenSerializer,
+                          UserSerializer)
 from .utils import decode_jwt_token, generate_jwt_token
 
 # For Sample response in swagger docs.
