@@ -4,7 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 
-LOGIN_URL = reverse('user:login')
+LOGIN_URL = reverse("user:login")
 
 
 def create_user(**params):
@@ -18,20 +18,17 @@ class LoginUserAPITests(TestCase):
         self.client = APIClient()
 
         payload = {
-            'email': 'tester@gmail.com',
-            'password': 'password',
-            'phone_number': '+917339195584',
-            'first_name': 'Siva Perumal'
+            "email": "tester@gmail.com",
+            "password": "password",
+            "phone_number": "+917339195584",
+            "first_name": "Siva Perumal",
         }
 
         create_user(**payload)
 
     def test_login_successful(self):
         """Test login successful with correct credentials"""
-        payload = {
-            'email': 'tester@gmail.com',
-            'password': 'password'
-        }
+        payload = {"email": "tester@gmail.com", "password": "password"}
 
         res = self.client.post(LOGIN_URL, payload)
 
@@ -40,20 +37,14 @@ class LoginUserAPITests(TestCase):
     def test_login_failed(self):
         """Test login fails with invalid credentials"""
 
-        payload = {
-            'email': 'tester@gmail.com',
-            'password': 'password123'
-        }
+        payload = {"email": "tester@gmail.com", "password": "password123"}
 
         res = self.client.post(LOGIN_URL, payload)
         self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
 
     def test_user_not_exist(self):
         """Test login fails if user does not exist"""
-        payload = {
-            'email': 'test@gmail.com',
-            'password': 'password'
-        }
+        payload = {"email": "test@gmail.com", "password": "password"}
 
         res = self.client.post(LOGIN_URL, payload)
 
@@ -62,10 +53,7 @@ class LoginUserAPITests(TestCase):
     def test_login_email_required(self):
         """Test login fails when email is not given"""
 
-        payload = {
-            'email': None,
-            'password': 'password'
-        }
+        payload = {"email": None, "password": "password"}
 
         res = self.client.post(LOGIN_URL, payload)
 
@@ -74,10 +62,7 @@ class LoginUserAPITests(TestCase):
     def test_login_password_required(self):
         """Test login fails when password is not given"""
 
-        payload = {
-            'email': 'tester@gmail.com',
-            'password': None
-        }
+        payload = {"email": "tester@gmail.com", "password": None}
 
         res = self.client.post(LOGIN_URL, payload)
 
