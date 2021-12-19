@@ -13,7 +13,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from core.views import custom404
+from core.views import custom404, custom500
+from django.conf.urls import handler500
 from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi
@@ -21,6 +22,7 @@ from drf_yasg.views import get_schema_view
 from rest_framework import permissions
 
 handler404 = custom404
+handler500 = custom500
 
 schema_view = get_schema_view(
     openapi.Info(
