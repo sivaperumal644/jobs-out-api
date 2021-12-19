@@ -1,13 +1,22 @@
+from django.http.response import JsonResponse
 from rest_framework import status
-from rest_framework.response import Response
 
 
-def custom404(request, exception=None):
-    return Response(
+def custom404(_, exception=None):
+    return JsonResponse(
         {
             "code": status.HTTP_404_NOT_FOUND,
             "status": False,
             "error": "The URL requested could not be found",
         },
-        status=status.HTTP_404_NOT_FOUND,
+    )
+
+
+def custom500(_):
+    return JsonResponse(
+        {
+            "code": status.HTTP_500_INTERNAL_SERVER_ERROR,
+            "status": False,
+            "error": "Internal Server Error",
+        }
     )
