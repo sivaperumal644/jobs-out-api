@@ -102,7 +102,7 @@ DATABASES["default"] = dj_database_url.config(
 )
 
 REST_FRAMEWORK = {
-    "DEFAULT_AUTHENTICATION_CLASSES": ("user.backends.JWTAuthentication",),
+    "DEFAULT_AUTHENTICATION_CLASSES": ("user.utils.backends.JWTAuthentication",),
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
 }
 

@@ -3,8 +3,9 @@ from django.contrib.auth import get_user_model
 from rest_framework import serializers, status
 
 from .models import User
-from .utils import (check_valid_email, check_valid_phone_number,
-                    decode_jwt_token)
+from .utils import constants
+from .utils.user_utils import (check_valid_email, check_valid_phone_number,
+                               decode_jwt_token)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -15,19 +16,30 @@ class UserSerializer(serializers.ModelSerializer):
         max_length=255,
         min_length=8,
         required=True,
-        error_messages={"min_length": "Email must be atleast 8 chararcters long"},
+        error_messages=constants.EMAIL_ERROR_MESSAGES,
     )
     password = serializers.CharField(
         max_length=65,
         min_length=8,
         write_only=True,
         required=True,
-        error_messages={"min_length": "Password must be atleast 8 chararcters long"},
+        error_messages=constants.PASSWORD_ERROR_MESSAGES,
     )
-    phone_number = serializers.CharField(max_length=13, required=True)
-    first_name = serializers.CharField(max_length=255, min_length=2, required=True)
+    phone_number = serializers.CharField(
+        max_length=13,
+        required=True,
+        error_messages=constants.PHONE_NUMBER_ERROR_MESSAGES,
+    )
+    first_name = serializers.CharField(
+        max_length=255,
+        min_length=2,
+        required=True,
+        error_messages=constants.FIRST_NAME_ERROR_MESSAGES,
+    )
     last_name = serializers.CharField(max_length=255, required=False, allow_blank=True)
-    age = serializers.IntegerField(required=False, allow_null=True)
+    age = serializers.IntegerField(
+        required=False, allow_null=True, error_messages=constants.GENDER_ERROR_MESSAGES
+    )
     gender = serializers.ChoiceField(choices=User.gender_choices, required=False)
     profession = serializers.CharField(max_length=50, required=False, allow_blank=True)
     experience = serializers.IntegerField(required=False, allow_null=True)
@@ -36,27 +48,6 @@ class UserSerializer(serializers.ModelSerializer):
     )
     is_admin = serializers.BooleanField(read_only=True)
     is_active = serializers.BooleanField(read_only=True)
-
-    def __init__(self, *args, **kwargs):
-        super(UserSerializer, self).__init__(*args, **kwargs)
-        self.fields["email"].error_messages["required"] = u"Email is required"
-        self.fields["email"].error_messages["blank"] = u"Email is required"
-        self.fields["email"].error_messages[
-            "min_length"
-        ] = u"Email must be atleast 8 characters long."
-        self.fields["password"].error_messages["required"] = u"Password is required"
-        self.fields["password"].error_messages["blank"] = u"Password is required"
-        self.fields["phone_number"].error_messages[
-            "required"
-        ] = u"Phone Number is required"
-        self.fields["phone_number"].error_messages[
-            "blank"
-        ] = u"Phone Number is required"
-        self.fields["first_name"].error_messages["required"] = u"First name is required"
-        self.fields["first_name"].error_messages["blank"] = u"First name is required"
-        self.fields["gender"].error_messages[
-            "invalid_choice"
-        ] = u"{input} is not a valid gender choice"
 
     class Meta:
         model = get_user_model()
@@ -84,11 +75,17 @@ class UserSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "User with this phone number already exists"
             )
-        if not check_valid_email(attrs["email"]):
-            raise serializers.ValidationError("Your email format is invalid")
-        if not check_valid_phone_number(attrs["phone_number"]):
-            raise serializers.ValidationError("Enter a valid phone number")
         return super().validate(attrs)
+
+    def validate_email(self, value):
+        if not check_valid_email(value):
+            raise serializers.ValidationError("Your email format is invalid")
+        return value
+
+    def validate_phone_number(self, value):
+        if not check_valid_phone_number(value):
+            raise serializers.ValidationError("Enter a valid phone number")
+        return value
 
     def create(self, validated_data):
         try:
@@ -101,21 +98,19 @@ class UserSerializer(serializers.ModelSerializer):
 class LoginSerializer(serializers.ModelSerializer):
     """Serializer for login API"""
 
-    email = serializers.CharField(max_length=255, min_length=8, required=True)
+    email = serializers.CharField(
+        max_length=255,
+        min_length=8,
+        required=True,
+        error_messages=constants.EMAIL_ERROR_MESSAGES,
+    )
     password = serializers.CharField(
         max_length=65,
         min_length=8,
         write_only=True,
         required=True,
-        error_messages={"min_length": "Password must be 8 chararcters long"},
+        error_messages=constants.PASSWORD_ERROR_MESSAGES,
     )
-
-    def __init__(self, *args, **kwargs):
-        super(LoginSerializer, self).__init__(*args, **kwargs)
-        self.fields["email"].error_messages["required"] = u"Email is required"
-        self.fields["email"].error_messages["blank"] = u"Email is required"
-        self.fields["password"].error_messages["required"] = u"Password is required"
-        self.fields["password"].error_messages["blank"] = u"Password is required"
 
     class Meta:
         model = User
@@ -127,13 +122,13 @@ class LoginSerializer(serializers.ModelSerializer):
         if not get_user_model().objects.filter(email=email).exists():
             raise serializers.ValidationError(
                 detail="User does not exist with this email",
-                code=status.HTTP_401_UNAUTHORIZED,
+                code=status.HTTP_400_BAD_REQUEST,
             )
         user = auth.authenticate(email=email, password=password)
         if not user:
             raise serializers.ValidationError(
                 detail="The credentials you entered are invalid",
-                code=status.HTTP_401_UNAUTHORIZED,
+                code=status.HTTP_400_BAD_REQUEST,
             )
         return super().validate(attrs)
 
@@ -141,16 +136,11 @@ class LoginSerializer(serializers.ModelSerializer):
 class RefreshTokenSerializer(serializers.ModelSerializer):
     """Serializer for refresh token API"""
 
-    refresh_token = serializers.CharField(max_length=255, required=True)
-
-    def __init__(self, *args, **kwargs):
-        super(RefreshTokenSerializer, self).__init__(*args, **kwargs)
-        self.fields["refresh_token"].error_messages[
-            "required"
-        ] = u"Refresh token is required"
-        self.fields["refresh_token"].error_messages[
-            "blank"
-        ] = u"Refresh token is required"
+    refresh_token = serializers.CharField(
+        max_length=255,
+        required=True,
+        error_messages=constants.REFRESH_TOKEN_ERROR_MESSAGES,
+    )
 
     class Meta:
         model = User
