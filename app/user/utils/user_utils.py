@@ -23,11 +23,11 @@ def generate_jwt_token(user):
 
     access_token = jwt.encode(
         access_token_payload, settings.TOKEN_SECRET_KEY, algorithm="HS256"
-    ).decode("utf-8")
+    )
 
     refresh_token = jwt.encode(
         refresh_token_payload, settings.TOKEN_SECRET_KEY, algorithm="HS256"
-    ).decode("utf-8")
+    )
 
     response = {
         "access_token": access_token,
@@ -41,7 +41,9 @@ def generate_jwt_token(user):
 def decode_jwt_token(refresh_token):
     """Decodes JWT token and returns user id"""
     try:
-        payload = jwt.decode(refresh_token, settings.TOKEN_SECRET_KEY)
+        payload = jwt.decode(
+            refresh_token, settings.TOKEN_SECRET_KEY, algorithms=["HS256"]
+        )
     except jwt.DecodeError:
         raise ValueError("Your token is invalid")
 

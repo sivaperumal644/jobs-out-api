@@ -1,42 +1,13 @@
 from core.custom_responses import CustomResponses
-from core.docs.sample_response import SampleResponses
+from core.docs.sample_responses.sample_user_response import SampleUserResponses
 from django.contrib.auth import get_user_model
 from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 
-from .serializers import (LoginSerializer, RefreshTokenSerializer,
-                          UserSerializer)
-from .utils import decode_jwt_token, generate_jwt_token
-
-# For Sample response in swagger docs.
-register_sample_response = {
-    "201": SampleResponses.sample_token_response(status_code=status.HTTP_201_CREATED),
-    "400": SampleResponses.sample_error_response(
-        status_code=status.HTTP_400_BAD_REQUEST
-    ),
-}
-
-login_sample_response = {
-    "200": SampleResponses.sample_token_response(status_code=status.HTTP_200_OK),
-    "400": SampleResponses.sample_error_response(
-        status_code=status.HTTP_400_BAD_REQUEST
-    ),
-    "401": SampleResponses.sample_error_response(
-        status_code=status.HTTP_401_UNAUTHORIZED
-    ),
-}
-
-refresh_sample_response = {
-    "200": SampleResponses.sample_token_response(status_code=status.HTTP_200_OK),
-    "400": SampleResponses.sample_error_response(
-        status_code=status.HTTP_400_BAD_REQUEST
-    ),
-    "401": SampleResponses.sample_error_response(
-        status_code=status.HTTP_401_UNAUTHORIZED
-    ),
-}
+from .serializers import LoginSerializer, RefreshTokenSerializer, UserSerializer
+from .utils.user_utils import decode_jwt_token, generate_jwt_token
 
 
 class RegisterUserView(GenericAPIView):
@@ -45,7 +16,8 @@ class RegisterUserView(GenericAPIView):
     serializer_class = UserSerializer
 
     @swagger_auto_schema(
-        responses=register_sample_response, request_body=UserSerializer
+        responses=SampleUserResponses().refresh_sample_response(),
+        request_body=UserSerializer,
     )
     def post(self, request):
         serialized_user = UserSerializer(data=request.data)
@@ -65,7 +37,10 @@ class LoginUserView(GenericAPIView):
 
     serializer_class = LoginSerializer
 
-    @swagger_auto_schema(responses=login_sample_response, request_body=LoginSerializer)
+    @swagger_auto_schema(
+        responses=SampleUserResponses().login_sample_response(),
+        request_body=LoginSerializer,
+    )
     def post(self, request):
         data = request.data
         serialized_data = LoginSerializer(data=data)
@@ -85,7 +60,8 @@ class RefreshTokenView(GenericAPIView):
     serializer_class = RefreshTokenSerializer
 
     @swagger_auto_schema(
-        responses=refresh_sample_response, request_body=RefreshTokenSerializer
+        responses=SampleUserResponses().refresh_sample_response(),
+        request_body=RefreshTokenSerializer,
     )
     def post(self, request):
         data = request.data

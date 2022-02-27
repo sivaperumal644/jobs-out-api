@@ -14,7 +14,6 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from core.views import custom404, custom500
-from django.conf.urls import handler500
 from django.contrib import admin
 from django.urls import include, path
 from drf_yasg import openapi

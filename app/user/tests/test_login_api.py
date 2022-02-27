@@ -40,7 +40,7 @@ class LoginUserAPITests(TestCase):
         payload = {"email": "tester@gmail.com", "password": "password123"}
 
         res = self.client.post(LOGIN_URL, payload)
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_user_not_exist(self):
         """Test login fails if user does not exist"""
@@ -48,7 +48,7 @@ class LoginUserAPITests(TestCase):
 
         res = self.client.post(LOGIN_URL, payload)
 
-        self.assertEqual(res.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertEqual(res.status_code, status.HTTP_400_BAD_REQUEST)
 
     def test_login_email_required(self):
         """Test login fails when email is not given"""
