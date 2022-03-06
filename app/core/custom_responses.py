@@ -26,3 +26,12 @@ class CustomResponses:
             "token": token,
         }
         return Response(data, status=status_code)
+
+    def get_states_response(states, status_code=status.HTTP_200_OK):
+        """Returns response of list of available states"""
+        data = {
+            "code": status_code,
+            "status": True,
+            "states": states,
+        }
+        return Response(data, status=status_code)

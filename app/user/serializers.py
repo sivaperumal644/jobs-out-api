@@ -4,8 +4,11 @@ from rest_framework import serializers, status
 
 from .models import User
 from .utils import constants
-from .utils.user_utils import (check_valid_email, check_valid_phone_number,
-                               decode_jwt_token)
+from .utils.user_utils import (
+    check_valid_email,
+    check_valid_phone_number,
+    decode_jwt_token,
+)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -95,7 +98,7 @@ class UserSerializer(serializers.ModelSerializer):
             return error
 
 
-class LoginSerializer(serializers.ModelSerializer):
+class LoginSerializer(serializers.Serializer):
     """Serializer for login API"""
 
     email = serializers.CharField(
@@ -133,7 +136,7 @@ class LoginSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
 
-class RefreshTokenSerializer(serializers.ModelSerializer):
+class RefreshTokenSerializer(serializers.Serializer):
     """Serializer for refresh token API"""
 
     refresh_token = serializers.CharField(
