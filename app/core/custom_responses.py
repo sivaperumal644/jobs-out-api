@@ -35,3 +35,12 @@ class CustomResponses:
             "states": states,
         }
         return Response(data, status=status_code)
+
+    def get_districts_response(districts, status_code=status.HTTP_200_OK):
+        """Returns response of list of available districts"""
+        data = {
+            "code": status_code,
+            "status": True,
+            "districts": districts,
+        }
+        return Response(data, status=status_code)

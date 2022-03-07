@@ -1,5 +1,3 @@
-from venv import create
-
 from django.test import TestCase
 from django.urls import reverse
 from general import models

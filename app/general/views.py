@@ -9,7 +9,7 @@ from . import serializers
 
 
 class StateView(GenericAPIView):
-    """To manage state api"""
+    """To manage state API"""
 
     serializer_class = serializers.StateSerializer
 
@@ -18,7 +18,19 @@ class StateView(GenericAPIView):
         query_serializer=serializers.StateSerializer,
     )
     def get(self, _):
-        stateData = models.State.objects.all()
-        serialized_data = serializers.StateSerializer(stateData, many=True)
+        state_data = models.State.objects.all()
+        serialized_data = serializers.StateSerializer(state_data, many=True)
         states = list(serialized_data.data)
         return CustomResponses.get_states_response(states)
+
+
+class DistrictView(GenericAPIView):
+    """To manage district API"""
+
+    serializer_class = serializers.DistrictSerializer
+
+    def get(self, _):
+        district_data = models.District.objects.all()
+        serialized_data = serializers.DistrictSerializer(district_data, many=True)
+        districts = list(serialized_data.data)
+        return CustomResponses.get_districts_response(districts)

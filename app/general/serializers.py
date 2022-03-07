@@ -12,3 +12,12 @@ class StateSerializer(serializers.ModelSerializer):
         model = models.State
         fields = "__all__"
         read_only_fields = ["id"]
+
+
+class DistrictSerializer(serializers.ModelSerializer):
+    """Serializer for District Model"""
+
+    class Meta:
+        model = models.District
+        fields = "__all__"
+        read_only_fields = ["id"]
