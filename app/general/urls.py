@@ -12,4 +12,10 @@ urlpatterns = [
         views.DistrictDetailView.as_view(),
         name="districts-details",
     ),
+    path("professions/", views.ProfessionView.as_view(), name="professions"),
+    path(
+        "professions/<int:pk>/",
+        views.ProfessionDetailView.as_view(),
+        name="professions-details",
+    ),
 ]

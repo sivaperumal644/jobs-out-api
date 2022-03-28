@@ -1,5 +1,8 @@
 from core.custom_responses import CustomResponses
 from core.docs.sample_responses.sample_district_response import SampleDistrictResponses
+from core.docs.sample_responses.sample_profession_response import (
+    SampleProfessionResponses,
+)
 from core.docs.sample_responses.sample_state_response import SampleStateResponses
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import GenericAPIView
@@ -86,4 +89,39 @@ class DistrictDetailView(GenericAPIView):
         except:
             return CustomResponses.single_error_response(
                 "Requested District could not be found"
+            )
+
+
+class ProfessionView(GenericAPIView):
+    """To manage profession API"""
+
+    serializer_class = serializers.ProfessionSerializer
+
+    @swagger_auto_schema(
+        responses=SampleProfessionResponses().get_all_profession_response(),
+        query_serializer=serializers.ProfessionSerializer,
+    )
+    def get(self, _):
+        profession_data = models.Profession.objects.all()
+        serialized_data = serializers.ProfessionSerializer(profession_data, many=True)
+        professions = list(serialized_data.data)
+        return CustomResponses.get_professions_response(professions)
+
+class ProfessionDetailView(GenericAPIView):
+    """To manage profession details API"""
+
+    serializer_class = serializers.ProfessionSerializer
+
+    @swagger_auto_schema(
+        responses=SampleProfessionResponses().get_profession_detail_response(),
+        query_serializer=serializers.ProfessionSerializer,
+    )
+    def get(self, _, pk):
+        try:
+            profession = models.Profession.objects.get(pk=pk)
+            serialized_profession = serializers.ProfessionSerializer(profession)
+            return CustomResponses.get_profession_response(serialized_profession.data)
+        except:
+            return CustomResponses.single_error_response(
+                "Requested Profession could not be found"
             )

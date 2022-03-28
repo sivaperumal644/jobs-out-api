@@ -71,3 +71,21 @@ class CustomResponses:
             "district": district,
         }
         return Response(data, status=status_code)
+
+    def get_professions_response(professions, status_code=status.HTTP_200_OK):
+        """Returns response of list of available professions"""
+        data = {
+            "code": status_code,
+            "status": True,
+            "professions": professions,
+        }
+        return Response(data, status=status_code)
+
+    def get_profession_response(profession, status_code=status.HTTP_200_OK):
+        """Returns response of given profession"""
+        data = {
+            "code": status_code,
+            "status": True,
+            "profession": profession,
+        }
+        return Response(data, status=status_code)

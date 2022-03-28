@@ -20,3 +20,14 @@ class District(models.Model):
 
     def __str__(self) -> str:
         return self.district_name
+
+
+class Profession(models.Model):
+    """Profession model for users"""
+
+    profession_name = models.CharField(
+        max_length=255, null=False, blank=False, unique=True
+    )
+
+    def __str__(self) -> str:
+        return self.profession_name

@@ -21,3 +21,12 @@ class DistrictSerializer(serializers.ModelSerializer):
         model = models.District
         fields = "__all__"
         read_only_fields = ["id"]
+
+
+class ProfessionSerializer(serializers.ModelSerializer):
+    """Serializer for Profession Model"""
+
+    class Meta:
+        model = models.Profession
+        fields = "__all__"
+        read_only_fields = ["id"]
