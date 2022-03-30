@@ -17,10 +17,7 @@ class StateView(GenericAPIView):
 
     serializer_class = serializers.StateSerializer
 
-    @swagger_auto_schema(
-        responses=SampleStateResponses().get_all_states_response(),
-        query_serializer=serializers.StateSerializer,
-    )
+    @swagger_auto_schema(responses=SampleStateResponses().get_all_states_response())
     def get(self, _):
         state_data = models.State.objects.all()
         serialized_data = serializers.StateSerializer(state_data, many=True)
@@ -33,10 +30,7 @@ class StateDetailView(GenericAPIView):
 
     serializer_class = serializers.StateSerializer
 
-    @swagger_auto_schema(
-        responses=SampleStateResponses().get_all_states_response(),
-        query_serializer=serializers.StateSerializer,
-    )
+    @swagger_auto_schema(responses=SampleStateResponses().get_all_states_response())
     def get(self, _, pk):
         try:
             state = models.State.objects.get(pk=pk)
@@ -54,8 +48,7 @@ class DistrictView(GenericAPIView):
     serializer_class = serializers.DistrictSerializer
 
     @swagger_auto_schema(
-        responses=SampleDistrictResponses().get_all_districts_response(),
-        query_serializer=serializers.DistrictSerializer,
+        responses=SampleDistrictResponses().get_all_districts_response()
     )
     def get(self, request):
         state_id = request.query_params.get("state_id")
@@ -78,8 +71,7 @@ class DistrictDetailView(GenericAPIView):
     serializer_class = serializers.DistrictSerializer
 
     @swagger_auto_schema(
-        responses=SampleDistrictResponses().get_district_detail_response(),
-        query_serializer=serializers.DistrictSerializer,
+        responses=SampleDistrictResponses().get_district_detail_response()
     )
     def get(self, _, pk):
         try:
@@ -98,8 +90,7 @@ class ProfessionView(GenericAPIView):
     serializer_class = serializers.ProfessionSerializer
 
     @swagger_auto_schema(
-        responses=SampleProfessionResponses().get_all_profession_response(),
-        query_serializer=serializers.ProfessionSerializer,
+        responses=SampleProfessionResponses().get_all_profession_response()
     )
     def get(self, _):
         profession_data = models.Profession.objects.all()
@@ -107,14 +98,14 @@ class ProfessionView(GenericAPIView):
         professions = list(serialized_data.data)
         return CustomResponses.get_professions_response(professions)
 
+
 class ProfessionDetailView(GenericAPIView):
     """To manage profession details API"""
 
     serializer_class = serializers.ProfessionSerializer
 
     @swagger_auto_schema(
-        responses=SampleProfessionResponses().get_profession_detail_response(),
-        query_serializer=serializers.ProfessionSerializer,
+        responses=SampleProfessionResponses().get_profession_detail_response()
     )
     def get(self, _, pk):
         try:
