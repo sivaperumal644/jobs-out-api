@@ -1,14 +1,12 @@
 from django.contrib import auth
 from django.contrib.auth import get_user_model
+from general.models import District, Profession, State
 from rest_framework import serializers, status
 
 from .models import User
 from .utils import constants
-from .utils.user_utils import (
-    check_valid_email,
-    check_valid_phone_number,
-    decode_jwt_token,
-)
+from .utils.user_utils import (check_valid_email, check_valid_phone_number,
+                               decode_jwt_token)
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -44,7 +42,27 @@ class UserSerializer(serializers.ModelSerializer):
         required=False, allow_null=True, error_messages=constants.GENDER_ERROR_MESSAGES
     )
     gender = serializers.ChoiceField(choices=User.gender_choices, required=False)
-    profession = serializers.CharField(max_length=50, required=False, allow_blank=True)
+    state_id = serializers.PrimaryKeyRelatedField(
+        queryset=State.objects.all(),
+        required=False,
+        allow_null=True,
+        write_only=True,
+        source="state",
+    )
+    district_id = serializers.PrimaryKeyRelatedField(
+        queryset=District.objects.all(),
+        required=False,
+        allow_null=True,
+        write_only=True,
+        source="district",
+    )
+    profession_id = serializers.PrimaryKeyRelatedField(
+        queryset=Profession.objects.all(),
+        required=False,
+        allow_null=True,
+        write_only=True,
+        source="profession",
+    )
     experience = serializers.IntegerField(required=False, allow_null=True)
     other_skills = serializers.CharField(
         max_length=255, required=False, allow_blank=True
@@ -65,11 +83,17 @@ class UserSerializer(serializers.ModelSerializer):
             "age",
             "gender",
             "profession",
+            "profession_id",
+            "state",
+            "state_id",
+            "district",
+            "district_id",
             "experience",
             "other_skills",
             "is_admin",
             "is_active",
         ]
+        depth = 1
 
     def validate(self, attrs):
         if get_user_model().objects.filter(email=attrs["email"]).exists():

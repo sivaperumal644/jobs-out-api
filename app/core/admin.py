@@ -20,6 +20,8 @@ class UserAdmin(BaseUserAdmin):
                     "age",
                     "gender",
                     "profession",
+                    "state",
+                    "district",
                     "experience",
                     "other_skills",
                 )
