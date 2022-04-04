@@ -48,11 +48,13 @@ class SampleDistrictResponses:
         return response
 
     def get_all_districts_response(self):
+        """Sample response for all districts"""
         return {
             "200": self.__generate_sample_districts_response(status.HTTP_200_OK),
         }
 
     def get_district_detail_response(self):
+        """Sample response for district detail"""
         return {
             "200": self.__generate_sample_district_detail_response(status.HTTP_200_OK),
             "400": sample_error_response.SampleErrorResponses().generate_sample_single_error_response(

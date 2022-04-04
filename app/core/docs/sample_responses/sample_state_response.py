@@ -46,11 +46,13 @@ class SampleStateResponses:
         return response
 
     def get_all_states_response(self):
+        """Sample response for all states"""
         return {
             "200": self.__generate_sample_states_response(status.HTTP_200_OK),
         }
 
     def get_state_detail_response(self):
+        """Sample response for state detail"""
         return {
             "200": self.__generate_sample_state_detail_response(status.HTTP_200_OK),
             "400": sample_error_response.SampleErrorResponses().generate_sample_single_error_response(

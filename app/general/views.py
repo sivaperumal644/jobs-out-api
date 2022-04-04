@@ -4,6 +4,7 @@ from core.docs.sample_responses.sample_profession_response import (
     SampleProfessionResponses,
 )
 from core.docs.sample_responses.sample_state_response import SampleStateResponses
+from drf_yasg import openapi
 from drf_yasg.utils import swagger_auto_schema
 from rest_framework.generics import GenericAPIView
 
@@ -48,7 +49,15 @@ class DistrictView(GenericAPIView):
     serializer_class = serializers.DistrictSerializer
 
     @swagger_auto_schema(
-        responses=SampleDistrictResponses().get_all_districts_response()
+        responses=SampleDistrictResponses().get_all_districts_response(),
+        manual_parameters=[
+            openapi.Parameter(
+                "state_id",
+                openapi.IN_QUERY,
+                description="Gets List of districts for given state.",
+                type=openapi.TYPE_NUMBER,
+            )
+        ],
     )
     def get(self, request):
         state_id = request.query_params.get("state_id")

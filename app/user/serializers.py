@@ -24,6 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
         min_length=8,
         write_only=True,
         required=True,
+        style={"input_type": "password"},
         error_messages=constants.PASSWORD_ERROR_MESSAGES,
     )
     phone_number = serializers.CharField(
@@ -136,6 +137,7 @@ class LoginSerializer(serializers.Serializer):
         min_length=8,
         write_only=True,
         required=True,
+        style={"input_type": "password"},
         error_messages=constants.PASSWORD_ERROR_MESSAGES,
     )
 
@@ -176,9 +178,9 @@ class RefreshTokenSerializer(serializers.Serializer):
     def validate(self, attrs):
         try:
             user_id = decode_jwt_token(attrs["refresh_token"])
-            user = get_user_model().objects.filter(user_id=user_id).exists()
+            userExists = get_user_model().objects.filter(user_id=user_id).exists()
 
-            if not user:
+            if not userExists:
                 raise serializers.ValidationError(
                     detail="Invalid token. User does not exist",
                     code=status.HTTP_401_UNAUTHORIZED,

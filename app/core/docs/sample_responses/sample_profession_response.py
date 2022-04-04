@@ -46,11 +46,13 @@ class SampleProfessionResponses:
         return response
 
     def get_all_profession_response(self):
+        """Sample response for all professions"""
         return {
             "200": self.__generate_sample_profession_response(status.HTTP_200_OK),
         }
 
     def get_profession_detail_response(self):
+        """Sample response for profession detail"""
         return {
             "200": self.__generate_sample_profession_detail_response(
                 status.HTTP_200_OK

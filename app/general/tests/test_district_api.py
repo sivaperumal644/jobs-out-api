@@ -19,6 +19,7 @@ class DistrictAPITests(TestCase):
     """Test the districts API"""
 
     def setUp(self):
+        """Create a states and districts for testing and setup client"""
         self.client = APIClient()
 
         state_one = {"state_name": "Tamil Nadu"}

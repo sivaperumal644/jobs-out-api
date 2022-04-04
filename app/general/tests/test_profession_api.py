@@ -15,6 +15,7 @@ class ProfessionAPITests(TestCase):
     """Test the profession API"""
 
     def setUp(self):
+        """Create a professions for testing and setup client"""
         self.client = APIClient()
 
         profession_one = {"profession_name": "Software Engineer"}

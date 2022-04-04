@@ -38,7 +38,7 @@ class SampleUserResponses:
         return response
 
     def register_sample_response(self) -> dict:
-        """Sample responses of"""
+        """Sample responses of register"""
         return {
             "201": self.__generate_sample_token_response(status.HTTP_201_CREATED),
             "400": SampleErrorResponses().generate_sample_error_response(
@@ -47,6 +47,7 @@ class SampleUserResponses:
         }
 
     def login_sample_response(self) -> dict:
+        """Sample responses of login"""
         return {
             "200": self.__generate_sample_token_response(status.HTTP_200_OK),
             "400": SampleErrorResponses().generate_sample_error_response(
@@ -58,6 +59,7 @@ class SampleUserResponses:
         }
 
     def refresh_sample_response(self) -> dict:
+        """Sample responses of refresh token"""
         return {
             "200": self.__generate_sample_token_response(status.HTTP_200_OK),
             "400": SampleErrorResponses().generate_sample_error_response(
