@@ -54,6 +54,7 @@ def decode_jwt_token(refresh_token):
 
 
 def check_valid_email(email):
+    """Validates email"""
     regex = "^(\w|\.|\_|\-)+[@](\w|\_|\-|\.)+[.]\w{2,3}$"
     if re.search(regex, email):
         return True
@@ -61,6 +62,7 @@ def check_valid_email(email):
 
 
 def check_valid_phone_number(phone_number):
+    """Validates phone number"""
     regex = "^\+91[6-9]{1}[0-9]{9}$"
 
     if re.search(regex, phone_number):

@@ -3,6 +3,7 @@ from rest_framework import status
 
 
 def custom404(_, exception=None):
+    """Returns custom 404 response"""
     return JsonResponse(
         {
             "code": status.HTTP_404_NOT_FOUND,
@@ -13,6 +14,7 @@ def custom404(_, exception=None):
 
 
 def custom500(_):
+    """Returns custom 500 response"""
     return JsonResponse(
         {
             "code": status.HTTP_500_INTERNAL_SERVER_ERROR,

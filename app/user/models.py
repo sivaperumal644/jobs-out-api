@@ -6,6 +6,7 @@ from django.contrib.auth.models import (
     PermissionsMixin,
 )
 from django.db import models
+from general.models import District, Profession, State
 
 
 class UserManager(BaseUserManager):
@@ -52,12 +53,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.CharField(max_length=255, unique=True)
     phone_number = models.CharField(max_length=13, unique=True)
     first_name = models.CharField(max_length=50)
-    last_name = models.CharField(max_length=50)
-    age = models.IntegerField(null=True)
+    last_name = models.CharField(max_length=50, null=True, blank=True)
+    age = models.IntegerField(null=True, blank=True)
     gender = models.CharField(max_length=10, choices=gender_choices)
-    profession = models.CharField(max_length=50)
-    experience = models.IntegerField(null=True)
-    other_skills = models.CharField(max_length=255)
+    profession = models.ForeignKey(Profession, on_delete=models.CASCADE, null=True)
+    state = models.ForeignKey(State, on_delete=models.CASCADE, null=True)
+    district = models.ForeignKey(District, on_delete=models.CASCADE, null=True)
+    experience = models.IntegerField(null=True, blank=True)
+    other_skills = models.CharField(max_length=255, blank=True)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)
