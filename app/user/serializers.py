@@ -1,5 +1,6 @@
 from django.contrib import auth
 from django.contrib.auth import get_user_model
+from general.models import District, Profession, State
 from rest_framework import serializers, status
 
 from .models import User
@@ -23,6 +24,7 @@ class UserSerializer(serializers.ModelSerializer):
         min_length=8,
         write_only=True,
         required=True,
+        style={"input_type": "password"},
         error_messages=constants.PASSWORD_ERROR_MESSAGES,
     )
     phone_number = serializers.CharField(
@@ -41,7 +43,27 @@ class UserSerializer(serializers.ModelSerializer):
         required=False, allow_null=True, error_messages=constants.GENDER_ERROR_MESSAGES
     )
     gender = serializers.ChoiceField(choices=User.gender_choices, required=False)
-    profession = serializers.CharField(max_length=50, required=False, allow_blank=True)
+    state_id = serializers.PrimaryKeyRelatedField(
+        queryset=State.objects.all(),
+        required=False,
+        allow_null=True,
+        write_only=True,
+        source="state",
+    )
+    district_id = serializers.PrimaryKeyRelatedField(
+        queryset=District.objects.all(),
+        required=False,
+        allow_null=True,
+        write_only=True,
+        source="district",
+    )
+    profession_id = serializers.PrimaryKeyRelatedField(
+        queryset=Profession.objects.all(),
+        required=False,
+        allow_null=True,
+        write_only=True,
+        source="profession",
+    )
     experience = serializers.IntegerField(required=False, allow_null=True)
     other_skills = serializers.CharField(
         max_length=255, required=False, allow_blank=True
@@ -62,11 +84,17 @@ class UserSerializer(serializers.ModelSerializer):
             "age",
             "gender",
             "profession",
+            "profession_id",
+            "state",
+            "state_id",
+            "district",
+            "district_id",
             "experience",
             "other_skills",
             "is_admin",
             "is_active",
         ]
+        depth = 1
 
     def validate(self, attrs):
         if get_user_model().objects.filter(email=attrs["email"]).exists():
@@ -95,7 +123,7 @@ class UserSerializer(serializers.ModelSerializer):
             return error
 
 
-class LoginSerializer(serializers.ModelSerializer):
+class LoginSerializer(serializers.Serializer):
     """Serializer for login API"""
 
     email = serializers.CharField(
@@ -109,6 +137,7 @@ class LoginSerializer(serializers.ModelSerializer):
         min_length=8,
         write_only=True,
         required=True,
+        style={"input_type": "password"},
         error_messages=constants.PASSWORD_ERROR_MESSAGES,
     )
 
@@ -133,7 +162,7 @@ class LoginSerializer(serializers.ModelSerializer):
         return super().validate(attrs)
 
 
-class RefreshTokenSerializer(serializers.ModelSerializer):
+class RefreshTokenSerializer(serializers.Serializer):
     """Serializer for refresh token API"""
 
     refresh_token = serializers.CharField(
@@ -149,9 +178,9 @@ class RefreshTokenSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         try:
             user_id = decode_jwt_token(attrs["refresh_token"])
-            user = get_user_model().objects.filter(user_id=user_id).exists()
+            userExists = get_user_model().objects.filter(user_id=user_id).exists()
 
-            if not user:
+            if not userExists:
                 raise serializers.ValidationError(
                     detail="Invalid token. User does not exist",
                     code=status.HTTP_401_UNAUTHORIZED,

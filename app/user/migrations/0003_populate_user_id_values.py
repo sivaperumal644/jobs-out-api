@@ -6,19 +6,18 @@ from django.db import migrations
 
 
 def gen_uuid(apps, schema_editor):
-    MyModel = apps.get_model('user', 'user')
+    MyModel = apps.get_model("user", "user")
     for row in MyModel.objects.all():
         row.user_id = uuid.uuid4()
-        row.save(update_fields=['user_id'])
+        row.save(update_fields=["user_id"])
 
 
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('user', '0002_user_user_id'),
+        ("user", "0002_user_user_id"),
     ]
 
     operations = [
-        # omit reverse_code=... if you don't want the migration to be reversible.
         migrations.RunPython(gen_uuid, reverse_code=migrations.RunPython.noop),
     ]
